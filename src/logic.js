@@ -25,3 +25,44 @@ export function dronesMantenimiento(flota) {
 
     return mantenimiento;
 }
+
+export function asignarDrones(alertas, drones) {
+    let asignaciones = [];
+    let noAtendidas = [];
+
+    let indexAsignacion = 0;
+    let indexNo = 0;
+
+    for (let i = 0; i < alertas.length; i++) {
+
+        let aguaNecesaria = alertas[i].aguaRequerida;
+        let dronesUsados = [];
+        let indexDrones = 0;
+
+        for (let j = 0; j < drones.length; j++) {
+
+            if (aguaNecesaria > 0 && drones[j].agua > 0) {
+                dronesUsados[indexDrones] = drones[j];
+                indexDrones++;
+
+                aguaNecesaria = aguaNecesaria - drones[j].agua;
+            }
+        }
+
+        if (aguaNecesaria <= 0) {
+            asignaciones[indexAsignacion] = {
+                sector: alertas[i].sector,
+                drones: dronesUsados
+            };
+            indexAsignacion++;
+        } else {
+            noAtendidas[indexNo] = alertas[i];
+            indexNo++;
+        }
+    }
+
+    return {
+        asignaciones: asignaciones,
+        noAtendidas: noAtendidas
+    };
+}
